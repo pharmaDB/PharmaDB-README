@@ -167,6 +167,7 @@ The virtual machine instance requires inbound traffic for the following ports:
 and the virtual machine requires outbound traffic for the following ports:
 
 ```
+80    (HTTP web hosting for the .csv export of the database)
 27017 (MongoDB database)
 27018 (MongoDB database)
 27019 (MongoDB database)
@@ -184,6 +185,8 @@ The provisioned virtual machine instance should also have additional storage cap
 Minimum     : 128 GB
 Recommended : 256 GB
 ```
+
+The NLP engine can take advantage of the GPU automatically if one is available.  Otherwise, it is still able to run on a server with just 4GB of ram, albeit slowly.
 
 
 #### Installing the MongoDB Dependencies
@@ -291,12 +294,6 @@ After cloning the back-end applications and installing all of their dependencies
 python3 -m ./etl_pipeline/main.py
 ```
 
-**scoring_data_processor**
-
-```
-python3 -m ./scoring_data_processor/main.py
-```
-
 **dailymed_data_processor**
 
 ```
@@ -310,6 +307,11 @@ node ./uspto_bulk_file_processor_v4/out/index.js \
     --patent-number-file "patents.json"
 ```
 
+**scoring_data_processor**
+
+```
+python3 ./scoring_data_processor/main.py
+```
 
 #### Setting Up the Recurring Monthly Data Refreshes
 
@@ -319,12 +321,6 @@ The above commands will build the static MongoDB database using all available da
 
 ```
 python3 -m ./etl_pipeline/main.py
-```
-
-**scoring_data_processor**
-
-```
-python3 -m ./scoring_data_processor/main.py
 ```
 
 **dailymed_data_processor**
@@ -340,4 +336,10 @@ node ~/uspto_bulk_file_processor_v4/out/index.js \
     --patent-number-file "patents.json" \
     --start-date "$(date +"%Y-%m-01" -d "-1 month")" \
     --end-date "$(date +"%Y-%m-01")"
+```
+
+**scoring_data_processor**
+
+```
+python3 ./scoring_data_processor/main.py
 ```
