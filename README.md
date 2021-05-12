@@ -258,6 +258,7 @@ pip3 install -r requirements.txt
 ```
 # While in the directory ~/scoring_data_processor/
 pip3 install -r requirements.txt
+sudo nohup python3 server.py &
 ```
 
 **dailymed_data_processor**
@@ -342,4 +343,5 @@ node ~/uspto_bulk_file_processor_v4/out/index.js \
 
 ```
 python3 ./scoring_data_processor/main.py
+python3 ./scoring_data_processor/main.py -db2csv
 ```
