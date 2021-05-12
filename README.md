@@ -1,6 +1,6 @@
 # PharmaDB
 
-The PharmaDB project is a natural language processing data project used to associate changes in patent claims with changes in labels on drug patents, and to present these changes in a usable way in order give better insight into patent strategies and to better position a firm's existing patent strategies. This repository contains the instructions needed in order to run the PharmaDB project.
+The PharmaDB project is a natural language processing data project used to associate changes in patent claims with changes in labels on drug patents, and to present these changes in a usable way in order give relevant insight into patent strategies and to better position a firm's existing patent strategies. This repository contains the instructions needed to run the PharmaDB project.
 
 
 ## Running PharmaDB
@@ -9,9 +9,6 @@ The core PharmaDB program is broken up into the front-end infrastructure and bac
 
 
 ### Running the PharmaDB Front-End Infrastructure
-
-Below are the instructions for setting up and running the PharmaDB front-end infrastructure.
-
 
 #### Installing the Single Page Application Dependencies
 
@@ -23,7 +20,7 @@ NodeJS : 10+
 NPM    : 5+
 ```
 
-However, older versions of the dependencies may work, but have not been tested.
+** Older versions of the dependencies may work, but have not been tested.
 
 
 #### Building the Single Page Application
@@ -50,7 +47,7 @@ Once the build has completed, the build artifacts will be stored in the `~/capst
 Once the single page application has been built, the build artifacts can be hosted on any standard web server. If using AWS, it is recommend to store the single page application on an AWS S3 bucket with read access to only a specified list of internal IP addresses to serve up the application to user's browser. Note that CORS may need to be enabled and updated depending on the domains that are hosting the resources.
 
 
-#### Setting Up the Front-End Web API Virtual Machine Instances
+#### Setting Up the Web API Virtual Machine Instances
 
 The built web API requires a virtual machine instance that may run one of the following operating systems:
 
@@ -58,14 +55,14 @@ The built web API requires a virtual machine instance that may run one of the fo
 Ubuntu 18.04
 Ubuntu 20.04 
 ```
+** Other operating systems and other versions may work as well, but have not been tested.
 
-However, other operating systems and other versions may work as well, but have not been tested. If running the infrastructure on AWS, the following Amazon Machine Images (AMI's) may be used:
+If running the infrastructure on AWS, the following Amazon Machine Images (AMI's) may be used:
 
 ```
 ami-042e8287309f5df03
 ```
-
-However, other AMI's may work as well, but have not been tested.
+** Other AMI's may work as well, but have not been tested.
 
 
 #### Setting Up the Inbound and Outbound Traffic
@@ -169,8 +166,6 @@ and the virtual machine requires outbound traffic for the following ports:
 ```
 80    (HTTP web hosting for the .csv export of the database)
 27017 (MongoDB database)
-27018 (MongoDB database)
-27019 (MongoDB database)
 8081  (Mongo Express administrative tool)
 ```
 
@@ -220,6 +215,8 @@ sudo docker run \
     -d mongo:4.4
 ```
 
+Alternatively, the `docker-compose` set up in the [ETL pipeline](https://github.com/pharmaDB/etl_pipeline) repo may be used.
+
 
 #### Installing the Back-End Application Dependencies
 
@@ -232,116 +229,12 @@ NodeJS : 10+
 NPM    : 5+
 ```
 
-However, older versions of the dependencies may work, but have not been tested.
+Older versions of the dependencies may work, but have not been tested.
 
-Once the dependencies are installed, all of the back-end application repositories need to be cloned from the git repositories. The following repositories need to be cloned:
+#### Importing the Bulk Data for the First Run
 
-```
-etl_pipeline                 (git clone https://github.com/pharmaDB/etl_pipeline.git)
-scoring_data_processor       (git clone https://github.com/pharmaDB/scoring_data_processor.git)
-dailymed_data_processor      (git clone https://github.com/pharmaDB/dailymed_data_processor.git)
-data_analysis                (git clone https://github.com/pharmaDB/data_analysis.git)
-uspto_bulk_file_processor_v4 (git clone https://github.com/pharmaDB/uspto_bulk_file_processor_v4.git)
-```
+The label and patent data for older years has been gathered using a combination of sources and clean up tasks (some of these are captured in Jupyter notebooks in the [data_analysis](https://github.com/pharmaDB/data_analysis) repository). To import the bulk data and scores, correct as of May 2021, please follow the steps described in the [scoring data processor's README](https://github.com/pharmaDB/scoring_data_processor#mongodb-set-up).
 
-Additional libraries for each repository need to be installed. The following commands will install the libraries for each of the cloned repositories:
+#### Running the Periodic data collection and ML scoring
 
-**etl_pipeline**
-
-```
-# While in the directory ~/etl_pipeline/
-pip3 install -r requirements.txt
-```
-
-**scoring_data_processor**
-
-```
-# While in the directory ~/scoring_data_processor/
-pip3 install -r requirements.txt
-sudo nohup python3 server.py &
-```
-
-**dailymed_data_processor**
-
-```
-# While in the directory ~/dailymed_data_processor/
-pip3 install -r requirements.txt
-```
-
-**uspto_bulk_file_processor_v4**
-
-```
-# While in the directory ~/uspto_bulk_file_processor_v4/
-npm install
-```
-
-Additionally, some repositories require additional build steps. The following commands can be used to build the programs in the repositories:
-
-**uspto_bulk_file_processor_v4**
-
-```
-# While in the directory ~/uspto_bulk_file_processor_v4/
-npm run build
-```
-
-
-#### Running the Back-End Applications
-
-After cloning the back-end applications and installing all of their dependencies, the back-end applications need to be run in order to build all of the data in the database. The following commands for each of the repositories will build the database. Note that the MongoDB database needs to be running and that the commands should be run in the order provided below in order for the applications to run properly:
-
-**etl_pipeline**
-
-```
-python3 -m ./etl_pipeline/main.py
-```
-
-**dailymed_data_processor**
-
-```
-python3 -m ./dailymed_data_processor/main.py
-```
-
-**uspto_bulk_file_processor_v4**
-
-```
-node ./uspto_bulk_file_processor_v4/out/index.js \
-    --patent-number-file "patents.json"
-```
-
-**scoring_data_processor**
-
-```
-python3 ./scoring_data_processor/main.py
-```
-
-#### Setting Up the Recurring Monthly Data Refreshes
-
-The above commands will build the static MongoDB database using all available data when run. As new data is added to the various data sources that the PharmaDB project is pulling from (such as the DailyMed and USPTO), monthly refresh scripts can be used to keep the MongoDB database up to date with this new data. The following commands can be added to a recurring cron job program to refresh the data in the database with new data. The below commands are set up to refresh data once a month, but more frequent refreshes can be run using different parameters:
-
-**etl_pipeline**
-
-```
-python3 -m ./etl_pipeline/main.py
-```
-
-**dailymed_data_processor**
-
-```
-python3 -m ./dailymed_data_processor/main.py
-```
-
-**uspto_bulk_file_processor_v4**
-
-```
-node ~/uspto_bulk_file_processor_v4/out/index.js \
-    --patent-number-file "patents.json" \
-    --start-date "$(date +"%Y-%m-01" -d "-1 month")" \
-    --end-date "$(date +"%Y-%m-01")"
-```
-
-**scoring_data_processor**
-
-```
-python3 ./scoring_data_processor/main.py
-python3 ./scoring_data_processor/main.py -db2csv
-```
+Please follow the steps described in the [ETL pipeline's README](https://github.com/pharmaDB/etl_pipeline#periodic-pipeline).
