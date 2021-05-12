@@ -238,3 +238,7 @@ The label and patent data for older years has been gathered using a combination 
 #### Running the Periodic data collection and ML scoring
 
 Please follow the steps described in the [ETL pipeline's README](https://github.com/pharmaDB/etl_pipeline#periodic-pipeline).
+
+#### Downloading CSV exports of the DB
+
+The last step of the ETL pipeline exports the DB in CSC format and compresses it to a `.zip` file. The Front End is able to retrieve this file and make it available for downloading, to the users. For supporting this functionality, the exported data must be hosted using a server. Start this server from the scoring data processor's module. This step is further described in the respective repo's [README](https://github.com/pharmaDB/scoring_data_processor#hosting-csv-zipped).
