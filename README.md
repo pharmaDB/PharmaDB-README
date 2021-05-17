@@ -129,7 +129,7 @@ MONGODB_PORT=27017
 MONGODB_NAME=pharmadb
 ```
 
-`localhost` should be changed to address of the MongoDB server if it is not hosted locally.
+`localhost` should be changed to address of the MongoDB server if it is not hosted locally with respect to the downloaded `etl_pipeline` repository.
 
 
 #### Start Servers
