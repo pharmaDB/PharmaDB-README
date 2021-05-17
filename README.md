@@ -176,7 +176,7 @@ python3 src/submodules/scoring_data_processor/main.py -ril -rilm -rio
 To load patent data onto the database, use the following command.  (Warning: This command may take a long time to complete, since it is downloading the entire US patent database from 1985 to present.  This command also need ~1.5TB of storage space):
 
 ```
-echo "[]" > empty_array.json && node out/index.js --connection-string="mongodb://localhost:27017/anthony" --patent-number-file="empty_array.json"
+echo "[]" > empty_array.json && node out/index.js --connection-string="mongodb://localhost:27017/pharmadb" --patent-number-file="empty_array.json"
 ```
 
 
