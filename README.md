@@ -173,7 +173,7 @@ The label and patent data for older years has been gathered using a combination 
 python3 src/submodules/scoring_data_processor/main.py -ril -rilm -rio
 ```
 
-To load patent data onto the database, use the following command:
+To load patent data onto the database, use the following command.  (Warning: This command may take a long time to complete, since it is downloading the entire US patent database from 1985 to present.):
 
 ```
 node src/submodules/uspto_bulk_file_processor_v4/out/index.js --connection-string="mongodb://localhost:27017/pharmadb"
