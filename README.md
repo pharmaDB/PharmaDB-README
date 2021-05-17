@@ -57,8 +57,8 @@ If running the infrastructure on AWS, the inbound and outbound ports should be s
 The provisioned virtual machine instance should also have additional storage capacity to store all of the data in the MongoDB instance. The storage space requirements are as follows:
 
 ```
-Minimum     : 128 GB
-Recommended : 256 GB
+Minimum     : 2 TB
+Recommended : 3 TB
 ```
 
 The NLP engine can take advantage of the GPU automatically if one is available.  Otherwise, it is still able to run on a server with just 4GB of ram, albeit slowly.
@@ -74,7 +74,7 @@ Docker Compose   : 1.29+
 Docker Engine CE : 19+
 Git              : 2+
 Python           : 3.7+
-NodeJS           : 10+
+NodeJS           : 10  <-- uspto-patent-processor will not run with NodeJS version 16
 NPM              : 5+
 ```
 
@@ -173,10 +173,10 @@ The label and patent data for older years has been gathered using a combination 
 python3 src/submodules/scoring_data_processor/main.py -ril -rilm -rio
 ```
 
-To load patent data onto the database, use the following command.  (Warning: This command may take a long time to complete, since it is downloading the entire US patent database from 1985 to present.):
+To load patent data onto the database, use the following command.  (Warning: This command may take a long time to complete, since it is downloading the entire US patent database from 1985 to present.  This command also need ~1.5TB of storage space):
 
 ```
-node src/submodules/uspto_bulk_file_processor_v4/out/index.js --connection-string="mongodb://localhost:27017/pharmadb"
+echo "[]" > empty_array.json && node out/index.js --connection-string="mongodb://localhost:27017/anthony" --patent-number-file="empty_array.json"
 ```
 
 
