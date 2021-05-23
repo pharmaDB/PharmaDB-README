@@ -231,7 +231,18 @@ In order to build the PharmaDB single page application, the following repositori
 capstone_spa (git clone https://github.com/pharmaDB/capstone_spa.git)
 ```
 
-Once the repository has been cloned, the following commands can be used to build the single page application:
+Once the repository has been cloned, please proceed to change `href="http://.../db2csv.csv.zip"` in line 15 of  `src/app/shared/navbar/navbar.component.html` to point to the address of the MongoDB database that was previously set-up in **Setting Up the Inbound and Outbound Traffic** of the **PharmaDB Back-end Infrastructure** above.  An example address is shown below:
+
+```
+href="http://ec2-35-170-81-159.compute-1.amazonaws.com/db2csv.csv.zip"
+```
+or
+
+```
+href="http://localhost/db2csv.csv.zip"
+```
+
+Next, the following commands can be used to build the single page application:
 
 ```
 # While in the directory ~/capstone_spa/
